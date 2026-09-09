@@ -83,7 +83,7 @@ public class SecurityConfig {
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .redirectUri("http://localhost:9090/redirect")
                 .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofDays(1)).build())
-//                .clientSettings(ClientSettings.builder().requireProofKey(false).build())
+                .clientSettings(ClientSettings.builder().requireProofKey(false).build())
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .scope("OPENID")
                 .build();
