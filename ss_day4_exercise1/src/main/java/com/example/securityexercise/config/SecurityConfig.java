@@ -21,9 +21,11 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.httpBasic(Customizer.withDefaults());
-
-        http.csrf(csrf -> csrf.disable());
+        http.oauth2ResourceServer(
+           c -> c.jwt(
+                   j -> j.jwkSetUri("http://localhost:8080/oauth2/jwks")
+           )
+        );
 
         http.authorizeHttpRequests(
                 auth -> auth.requestMatchers(GET,"/api/products").permitAll()
@@ -31,35 +33,36 @@ public class SecurityConfig {
                             .requestMatchers(POST, "/api/orders").authenticated()
                             .requestMatchers(GET, "/api/orders/**").authenticated()
                             .requestMatchers("/api/**").authenticated()
+                            .requestMatchers("/protected/**").authenticated()
                             .anyRequest().denyAll()
         );
 
         return http.build();
     }
 
-    @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
-        UserDetails alice = User.withUsername("alice")
-            .password("{noop}password")
-            .roles("CUSTOMER")
-            .build();
-
-        UserDetails bob = User.withUsername("bob")
-            .password("{noop}password")
-            .roles("CUSTOMER")
-            .authorities("ROLE_CUSTOMER", "ORDER_REFUND")
-            .build();
-
-        UserDetails manager = User.withUsername("manager")
-            .password("{noop}password")
-            .roles("MANAGER")
-            .build();
-
-        UserDetails admin = User.withUsername("admin")
-            .password("{noop}password")
-            .roles("ADMIN")
-            .build();
-
-        return new InMemoryUserDetailsManager(alice, bob, manager, admin);
-    }
+//    @Bean
+//    public InMemoryUserDetailsManager userDetailsService() {
+//        UserDetails alice = User.withUsername("alice")
+//            .password("{noop}password")
+//            .roles("CUSTOMER")
+//            .build();
+//
+//        UserDetails bob = User.withUsername("bob")
+//            .password("{noop}password")
+//            .roles("CUSTOMER")
+//            .authorities("ROLE_CUSTOMER", "ORDER_REFUND")
+//            .build();
+//
+//        UserDetails manager = User.withUsername("manager")
+//            .password("{noop}password")
+//            .roles("MANAGER")
+//            .build();
+//
+//        UserDetails admin = User.withUsername("admin")
+//            .password("{noop}password")
+//            .roles("ADMIN")
+//            .build();
+//
+//        return new InMemoryUserDetailsManager(alice, bob, manager, admin);
+//    }
 }
