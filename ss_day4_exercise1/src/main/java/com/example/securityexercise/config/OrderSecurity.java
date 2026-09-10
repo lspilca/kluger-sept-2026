@@ -28,7 +28,7 @@ public class OrderSecurity {
                 .map(owner -> owner.equals(username))
                 .orElse(false);
 
-        return ownsOrder || authentication.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
+        return ownsOrder || authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
 
     public boolean canUpdateOrder(String status) {
